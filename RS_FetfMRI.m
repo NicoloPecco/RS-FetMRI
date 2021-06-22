@@ -149,7 +149,9 @@ for i=1:size(Session_name,1)
     if size(name_orig,1)==1
         copyfile([path_to_M1_PP_01_OrigVol,'/',list(i).name,'/',name_orig.name],[path_to_M1_PP_02_4Dto3D,'/',Session_name{i,1},'.nii'])
     else
-        disp(['More than one .nii found in folder: ',name_orig])
+     spm_input(['Error: More than one .nii detected in folder (',list(i).name,') . Inside each folder there must be only one Nifti file. Check the name_orig variable and rerun the code. '],'-1','bd','Yes');   
+     disp('More than one .nii detected in folder. Inside each folder there must be only one Nifti file. See the name_orig variable.');
+     return
     end
      disp(['Naming for Session ',Session_name{i,1},' completed!!'])
 end
@@ -1049,7 +1051,7 @@ end
 
 %% Visual sc9 inspection
 
-spm_input(['Now the inner-brain Session-Specific Functional Reference mask will be displayed for each session. Segmentation was processed with : ',num2str(GW2beused) ,' Gestational Week.'],'-1','bd','Ok!');
+spm_input(['Now the inner-brain Session-Specific Functional Reference mask will be displayed for each session. Segmentation was processed with : ',num2str(GW_winner) ,' Gestational Week.'],'-1','bd','Ok!');
 
 % Comment this section to skip the visualization;
 clear ref2show mask2show
