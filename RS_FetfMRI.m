@@ -8,8 +8,6 @@
 
 % It is supported by MacOS, Linux and Windiws operating systems if MATLAB is available. RS-fMRIsp is divided into 6 modules where the first
 % three, from M1 to M3, works ‘Within Session’ (WS) while the last four, from M4 to cM7, work ‘Between Session’ (BS).
-% The WS step works in each session separately, using for each session one reference volume. Differently, the BS step
-% works taking into account only one reference volume for all the sessions.
 
 %% Requirements:
 
@@ -26,7 +24,7 @@
 %         these files, three paths need to be modified (‘image_dir’,
 %         ‘motion_dir’ and ‘mask_file’): 
 
-%               - File_1Srub.cfg:  Update each path but maintain this
+%               - File_1Srub.cfg:  Update each path maintaining this
 %                 folder at the end:
 
 %                       1. image_dir: /M2_WS_03_Scrub/9999/ 
@@ -207,7 +205,7 @@ for i=1:size(Session_name,1)
     spm_check_registration(file2show{1,:},file2show{2,:},file2show{3,:},file2show{4,:},file2show{5,:},file2show{6,:});
     answ={[num2str(answ_tmp(1)),'|',num2str(answ_tmp(2)),'|',num2str(answ_tmp(3)),'|',num2str(answ_tmp(4)),'|',num2str(answ_tmp(5)),'|',num2str(answ_tmp(6))]};
     promt=['Choose the Reference for session ',Session_name{i,1}, ' : '];
-    spm_input(['This step is one of the most important!  Six images will be displayed per session: ',Session_name{i,1},'. 1) Choose a reference image; 2) Reorient the chosen reference volume *be sure to set the origin at the level of cingulate* (See Manual); 3) Apply the transformation parameters to all volumes of the current session.'],'-1','bd','Yes');
+    spm_input(['This step is one of the most important!  Six images will be displayed per session: ',Session_name{i,1},'. 1) Choose a reference image; 2) Reorient the chosen reference volume *be sure to set the origin at the level of Anterior Commissure* (See Manual); 3) Apply the transformation parameters to all volumes of the current session.'],'-1','bd','Yes');
     REF_vol1=spm_input(promt,'-1','m',answ,[answ_tmp(1),answ_tmp(2),answ_tmp(3),answ_tmp(4),answ_tmp(5),answ_tmp(6)]);
     REF_vol(i)={num2str(REF_vol1,'%05d')};
     spm_image('Display',[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',REF_vol{1,i},'.nii']);
@@ -1861,7 +1859,7 @@ disp('                                                                          
 % In case of One session the processing start again here afer module 2.
 
 else
-    
+spm_input('You have only one session therefore M3 and M4 modules will be skipped and their folders will be deleted.','-1','bd','Ok!');    
 %copio il primo file della prima sessione dentro M5_BS_01_SegMeanRefVol
 from=[path_to_M2_WS_04_Rename,'/',Session_name{1,1},'/','r1m',Session_name{1,1},'_001.nii'];
 to=[path_to_M5_BS_01_SegMeanRefVol,'/r2mr1m',Session_name{1,1},'_0001.nii'];
