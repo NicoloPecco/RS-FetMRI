@@ -24,7 +24,7 @@ The RS-FetMRI package can be downloaded from GitHub (https://github/NicoloPecco/
 
 - Matlab2013 (or above);
 - SPM12 (or above);
-- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then rename all of these files as demonstrated in the example for the 21st Gestational Week (GW): Fetal Brain Atlas weeks 21 --> STA21.nii. These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder.
+- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip the 'STA*.nii.gz' file (i.e. STA21.nii.gz --> STA21.nii). These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder.
 
 # Initialization
 
