@@ -1,4 +1,4 @@
-# RS-FetfMRI
+# RS-FetMRI
 RS-FetfMRI for processing Fetal resting-state functional MRI scans
 
 ### Introduction
