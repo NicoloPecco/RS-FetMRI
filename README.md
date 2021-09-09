@@ -28,7 +28,7 @@ The RS-FetMRI package can be downloaded from GitHub (https://github/NicoloPecco/
 
 # Initialization
 
-Before launching the code, the user should open the main script ‘RSFetfMRI.m’ and change the  ‘general_path’ and ‘path_to_cfg_file’ variables as well as the paths within the configuration files (‘.cfg’) located in the ‘art’ folder. Within these files, three paths are hard coded (‘image_dir’, ‘motion_dir’ and ‘mask_file’) and they need to be modified before any analysis can be exploited. The ‘general_path’ and ‘path_to_cffg_file’  variables must contain the path of the user’s working machine directed to the RS-FetMRI folder and to the ‘art’ folder, respectively. If the ART toolbox was previously installed, it should only be removed from the MATLAB paths and then updated with the new script path instead.
+We strongly encourage the users to read the user manual, expecially for the initialization step, before to run any analyses. The RS-FetMRI preprocessing package can be placed on the local machine in an arbitrary location. Before launching the code, the user should modify three paths (‘image_dir’, ‘motion_dir’ and ‘mask_file’) specified in each of the three configuration files located in the ‘art’ folder. If the ART toolbox was previously installed, it should only be removed from the MATLAB paths and then updated with the new script path instead.
 
 # TestSet
 
