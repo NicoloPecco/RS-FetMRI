@@ -49,8 +49,11 @@
 
 % General Path set up:
 global path_general;
-path_to_cffg_file='/Volumes/VERBATIM/Titta_Manuale/Dati_fmri/Dati_fmri/art/'; %% CHANGE
-path_general='/Volumes/VERBATIM/Titta_Manuale/Dati_fmri/Dati_fmri/'; %% CHANGE
+
+path=cd();
+path_to_cffg_file=[path,'/art/'];
+path_general=[path,'/'];
+
 addpath(path_to_cffg_file);
 cd(path_general)
 folder2create={'M1_PP_01_OrigVol','M1_PP_02_4Dto3D','M1_PP_03_Reorient','M1_PP_04_Rename','M2_WS_01_Mask','M2_WS_02_Realign','M2_WS_03_Scrub','M2_WS_04_Rename','M3_WS_01_SegRefVols','M3_WS_02_MaskRefVols','M3_WS_03_RealignMaskRefVols','M3_WS_04_Rename','M4_BS_01_Realign_Reslice','M4_BS_02_Scrub','M4_BS_03_Rename','M5_BS_01_SegMeanRefVol','M5_BS_02_MaskMeanRefVol','M5_BS_03_NormMaskMeanRefVol','M6_BS_01_MaskAllVols','M6_BS_02_NormMaskAllVols'};
