@@ -18,9 +18,8 @@
 
 %% Initialization:
 
-%      1) Change path_general and path_to_cffg_file;
-%      2) Set path for the ‘art’ folder in Matlab;
-%      3) Inside the ‘art’ folder there are three ‘.cfg’ text files. In
+%      1) Set path for the ‘art’ folder in Matlab;
+%      2) Inside the ‘art’ folder there are three ‘.cfg’ text files. In
 %         these files, three paths need to be modified (‘image_dir’,
 %         ‘motion_dir’ and ‘mask_file’): 
 
