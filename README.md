@@ -10,9 +10,9 @@ The RS-FetMR is capable of 1) detecting and correcting fetal-specific motion eff
 <p align="center">
 <img src="https://github.com/NicoloPecco/RS-FetMRI/blob/main/Images/Flowchart.png" width="800" height="800">
 </p>
-> Flowchart of the RS-FetMRI pipeline.
-
-### We recommend to download and read carfully the User-Manual for the Usage, Installation and Requirement for the RS-FetMRI!
+<p align="center">
+Flowchart of the RS-FetMRI pipeline.
+</p>
 
 # Usage 
 
@@ -24,11 +24,15 @@ The RS-FetMRI package can be downloaded from GitHub (https://github/NicoloPecco/
 
 - Matlab2013 (or above);
 - SPM12 (or above);
-- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip the 'STA*.nii.gz' file (i.e. STA21.nii.gz --> STA21.nii). These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder.
+- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip the 'STA*.nii.gz' file (i.e. STA21.nii.gz --> STA21.nii). These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder;
+- Initialization.
 
 # Initialization
 
-We strongly encourage the users to read the user manual, expecially for the initialization step, before to run any analyses. The RS-FetMRI preprocessing package can be placed on the local machine in an arbitrary location. Before launching the code, the user should modify three paths (‘image_dir’, ‘motion_dir’ and ‘mask_file’) specified in each of the three configuration files located in the ‘art’ folder. If the ART toolbox was previously installed, it should only be removed from the MATLAB paths and then updated with the new script path instead.
+We strongly encourage the users to read the user manual, expecially for the initialization step, before to run any analyses. 
+Enter the ‘art’ folder within the ‘RS-FetMRI’ package. This folder contains **three configuration files** (‘.cfg’). Within each of the configuration file, **three paths (‘image_dir’, ‘motion_dir’ and ‘mask_file’) need to be modified** before any analysis can be exploited (See supplementary Initialization in the User Manual).
+If the ART toolbox was previously installed, it should be removed from the MATLAB paths and then updated with the new script path instead.
+Once the configuration files were modified, **open Matlab** software and **set the current folder** within the ‘RS-FetMRI’ folder and press the run button.
 
 # TestSet
 
