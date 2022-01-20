@@ -201,8 +201,8 @@ for i=1:size(Session_name,1)
     clear input file2show
     for j=1:6
         %file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(j*5+(j-1)*5,'%05d'),'.nii'];
-        file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)-5),'%05d'),'.nii'];
-        answ_tmp(j)=((floor(vol4session/6)*j)-5);
+        file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)),'%05d'),'.nii'];
+        answ_tmp(j)=((floor(vol4session/6)*j));
     end
     spm_check_registration(file2show{1,:},file2show{2,:},file2show{3,:},file2show{4,:},file2show{5,:},file2show{6,:});
     answ={[num2str(answ_tmp(1)),'|',num2str(answ_tmp(2)),'|',num2str(answ_tmp(3)),'|',num2str(answ_tmp(4)),'|',num2str(answ_tmp(5)),'|',num2str(answ_tmp(6))]};
@@ -229,7 +229,7 @@ for i=1:size(Session_name,1)
     clear input file2show answ_tmp
     for j=1:6 
         %file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(j*5+(j-1)*5,'%05d'),'.nii'];
-        file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)-5),'%05d'),'.nii'];
+        file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)),'%05d'),'.nii'];
     end
     spm_check_registration(file2show{1,:},file2show{2,:},file2show{3,:},file2show{4,:},file2show{5,:},file2show{6,:});
     if i==1
@@ -243,8 +243,8 @@ for i=1:size(Session_name,1)
         clear input file2show
         for j=1:6
             %file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(j*5+(j-1)*5,'%05d'),'.nii'];
-            file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)-5),'%05d'),'.nii'];
-            answ_tmp(j)=((floor(vol4session/6)*j)-5);
+            file2show{j,1}=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1},'/',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)),'%05d'),'.nii'];
+            answ_tmp(j)=((floor(vol4session/6)*j));
         end
         answ={[num2str(answ_tmp(1)),'|',num2str(answ_tmp(2)),'|',num2str(answ_tmp(3)),'|',num2str(answ_tmp(4)),'|',num2str(answ_tmp(5)),'|',num2str(answ_tmp(6))]};
         spm_check_registration(file2show{1,:},file2show{2,:},file2show{3,:},file2show{4,:},file2show{5,:},file2show{6,:});
@@ -465,7 +465,7 @@ for i=1:size(Session_name,1)
 clear input  ref2show file2show temp2beshow
        for j=1:6
             %file2show{j,1}=[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/m',Session_name{i,1},'_',num2str(j*5+(j-1)*5,'%03d'),'.nii'];
-            file2show{j,1}=[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/m',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)-5),'%03d'),'.nii'];
+            file2show{j,1}=[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/m',Session_name{i,1},'_',num2str(((floor(vol4session/6)*j)),'%03d'),'.nii'];
        end
         ref2show=[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/m',Session_name{i,1},'_001.nii'];
         nomask2show=[path_to_M1_PP_04_Rename,'/',Session_name{i,1},'/',Session_name{i,1},'_001.nii'];
