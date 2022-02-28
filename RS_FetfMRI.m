@@ -1884,7 +1884,7 @@ if GA==1
  folder2becreated={'M5_GR_BS_01_SegMeanRefVol','M5_GR_BS_02_MaskMeanRefVol','M5_GR_BS_03_NormMaskMeanRefVol','M6_GR_BS_01_MaskAllVols','M6_GR_BS_02_NormMaskAllVols'};
 
     for i=1:5
-            movefile(['/home/dati/Nico_auto_15T/Dati_fmri/',folder2beremoved{1,i}],['/home/dati/Nico_auto_15T/Dati_fmri/',folder2becreated{1,i}])
+            movefile([path_general,folder2beremoved{1,i}],[path_general,folder2becreated{1,i}])
     end
         
     % Changing path
