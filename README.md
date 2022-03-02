@@ -24,12 +24,12 @@ The RS-FetMRI package can be downloaded from GitHub (https://github/NicoloPecco/
 
 - Matlab2013 (or above);
 - SPM12 (or above);
-- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip the 'STA*.nii.gz' file (i.e. STA21.nii.gz --> STA21.nii). These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder;
+- The user must download the CRL Fetal Brain Atlas images  – GW 21 through 37– from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip the 'STA*.nii.gz' file (i.e. STA21.nii.gz --> STA21.nii or STA37exp.nii.gz --> STA37.nii). These file must be inserted in the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder;
 - Initialization.
 
 # Initialization
 
-We strongly encourage the users to read the user manual, expecially for the initialization step, before to run any analyses. 
+We strongly encourage the users to read the user manual and to see the 'Tutorial_RSFetMRI.mp4' viedo, expecially for the initialization step, before to run any analyses.  
 Enter the ‘art’ folder within the ‘RS-FetMRI’ package. This folder contains **three configuration files** (‘.cfg’). Within each of the configuration file, **three paths (‘image_dir’, ‘motion_dir’ and ‘mask_file’) need to be modified** before any analysis can be exploited (See supplementary Initialization in the User Manual).
 If the ART toolbox was previously installed, it should be removed from the MATLAB paths and then updated with the new script path instead.
 Once the configuration files were modified, **open Matlab** software and **set the current folder** within the ‘RS-FetMRI’ folder and press the run button.
