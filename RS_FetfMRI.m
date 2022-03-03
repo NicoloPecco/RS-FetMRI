@@ -1365,7 +1365,12 @@ X = char(X.');
 Y = strrep(X, '9999', Session_name{1,1});
 
 % Change X file:
+if length(Session_name) <= 9
 Y(11)=num2str(length(Session_name));
+else
+Y(11:12)=num2str(length(Session_name));
+end
+
 for i=1:size(Session_name,1)
 Imagestobeinserted{i,:}=(['session ', num2str(i), ' image ',Session_name{i,1},'/', 'r2mr1m',Session_name{i,1},'_????.nii']);
 end
