@@ -1,24 +1,24 @@
-%% Article: ....
-
+%% Article: RS-FetMRI: a MATLAB-SPM based Tool for pre-processing Fetal Resting-State fMRI data.
+% Corresponding Author: Nicolò Pecco and Pasquale Anthony Della Rosa
 
 %% Code Description
 
-% RS-FetfMRI semiautomatic processing (RS-fMRIsp) is an open-source package (source code available at http://.....)
-% totally integrated in SPM (Statistical Parametric Maps). 
+% RS-FetfMRI semiautomatic processing (RS-fMRIsp) is an open-source package (source code available at https://github.com/NicoloPecco/RS-FetMRI)
+% totally integrated in SPM (Statistical Parametric Maps) and Matlab (at least 2013). 
 
 % It is supported by MacOS, Linux and Windiws operating systems if MATLAB is available. RS-fMRIsp is divided into 6 modules where the first
-% three, from M1 to M3, works ‘Within Session’ (WS) while the last four, from M4 to cM7, work ‘Between Session’ (BS).
+% three, from M1 to M3, work ‘Within Session’ (WS) while the last four, from M4 to M6, work ‘Between Session’ (BS).
 
 %% Requirements:
 
 %      1) Matlab2013 or above;
 %      2) SPM12 or above;
-%      3) RS-FetfMRI package: 'art', 'Template' folder and
+%      3) RS-FetfMRI package: 'art', 'Template' folder and subfolder
 %                             'Create_Template.m' Matlab function
 
-%% Initialization:
+%% Initialization: We recomend to see the Video tutorial and to read the User manual provided in the github repository
 
-%      1) Set path for the ‘art’ folder in Matlab;
+%      1) Add the ‘art’ path folder in Matlab;
 %      2) Inside the ‘art’ folder there are three ‘.cfg’ text files. In
 %         these files, three paths need to be modified (‘image_dir’,
 %         ‘motion_dir’ and ‘mask_file’): 
@@ -34,10 +34,18 @@
 
 %                       1. image_dir: /M4_BS_02_Scrub/ 
 %                       2. motion_dir: /M4_BS_02_Scrub/Motion_file/  
-%                       3. mask_file: /M4_BS_02_Scrub/9999/r2mr1m9999_0001.nii   
+%                       3. mask_file: /M4_BS_02_Scrub/9999/r2mr1m9999_0001.nii 
+
+%     3) Download The user must download the CRL Fetal Brain Atlas images – GW 21 through 37 – 
+%        from <http://crl.med.harvard.edu/research/fetal_brain_atlas/> and then unzip all of the ‘STA*.nii.gz’ files as demonstrated in the example for a 21st Gestational Week (GW) below:
+
+%         STA21.nii.gz   STA21.nii    or    STA37exp.nii.gz   STA37.nii
+
+%         All of the ‘STA*.nii’ files must be placed inside the subfolder ‘Template_orig’ which is found within the ‘Templates’ folder (if not, create it). 
 
 
-%% Follow the MANUAL for more detailed code explanation.
+
+%% Follow the MANUAL and the Video for more detailed code explanation.
 
 
 %% INITIALIZATION: Path creation and Setting Paths
@@ -48,13 +56,13 @@
 
 % General Path set up:
 global path_general;
-
 path=cd();
 path_to_cffg_file=[path,'/art/'];
 path_general=[path,'/'];
-
 addpath(path_to_cffg_file);
 cd(path_general)
+
+% Folders Creation
 folder2create={'M1_PP_01_OrigVol','M1_PP_02_4Dto3D','M1_PP_03_Reorient','M1_PP_04_Rename','M2_WS_01_Mask','M2_WS_02_Realign','M2_WS_03_Scrub','M2_WS_04_Rename','M3_WS_01_SegRefVols','M3_WS_02_MaskRefVols','M3_WS_03_RealignMaskRefVols','M3_WS_04_Rename','M4_BS_01_Realign_Reslice','M4_BS_02_Scrub','M4_BS_03_Rename','M5_BS_01_SegMeanRefVol','M5_BS_02_MaskMeanRefVol','M5_BS_03_NormMaskMeanRefVol','M6_BS_01_MaskAllVols','M6_BS_02_NormMaskAllVols'};
 for num_folder=1:size(folder2create,2)
     if ~exist(folder2create{1,num_folder}, 'dir')
@@ -123,18 +131,17 @@ disp('                           ._)_)./                                        
 disp('                           ._)_)./                                               ')
 disp('                                                                                 ')
 
-
 %% Creation of folders for each session. Renaming nifti files with default session name inside M1_PP_01_OrigVol.
 cd(path_general)
 diary Module1_logfile
-
 disp('First of all, Good Day! Thanks for using this program! ')
+disp(' ')
 disp('Creating folder and Renaming 4D file with default name.')
-
 cd(path_to_M1_PP_01_OrigVol);
 list=dir();
-% Get vector to recognize folders only:
-list(ismember({list.name},{'.','..'}))=[];
+
+% Creating new session names ('1001','1002', etc.)
+list(ismember({list.name},{'.','..','.DS_Store'}))=[];
 Session_name = cell(length(list),1);
 for i=1:length(list)
        Session_name{i,1}=num2str(i,'%02d');
@@ -142,10 +149,11 @@ for i=1:length(list)
        disp(['Default name for session ',num2str(i,'%01d'),' : ',Session_name{i,1}]);
 end
 
+% Renaming session folders to standard ('1001','1002', etc.) and copying file in M1_PP_02_4Dto3D
 for i=1:size(Session_name,1)
     cd([path_to_M1_PP_01_OrigVol,'/',list(i).name])
     name_orig=dir('*.nii');
-    name_orig(ismember({name_orig.name},{'.','..'}))=[];
+    name_orig(ismember({name_orig.name},{'.','..','.DS_Store'}))=[];
     if size(name_orig,1)==1
         copyfile([path_to_M1_PP_01_OrigVol,'/',list(i).name,'/',name_orig.name],[path_to_M1_PP_02_4Dto3D,'/',Session_name{i,1},'.nii'])
     else
@@ -175,7 +183,7 @@ for i=1:size(Session_name,1)
     disp(['Session ',Session_name{i,1},' 4D to 3D conversion completed!!'])
 end
 
-% Volume for session:
+% Number of volume for session:
 for i=1:size(Session_name,1)
     clear list_tmp
     list_tmp=length(dir([path_to_M1_PP_02_4Dto3D,'/',Session_name{i,1},'/',Session_name{i,1},'*.nii']));
@@ -183,17 +191,15 @@ for i=1:size(Session_name,1)
     vol4session=min(vol4session_tmp);
 end
 
-%% From M1_PP_02_4Dto3D to M1_PP_03_Reorient
-
+% From M1_PP_02_4Dto3D to M1_PP_03_Reorient
 disp('Copying files from M1_PP_02_4Dto3D to M1_PP_03_Reorient')
-%disp('This step is one of the most important..')
-
 for i=1:size(Session_name,1)
     from=[path_to_M1_PP_02_4Dto3D,'/',Session_name{i,1}];
     to=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1}];
     copyfile(from,to)
 end
 
+%Reference volume selection for each session
 cd(path_to_M1_PP_03_Reorient)
 file2show = cell(6,1);
 REF_vol=cell(1,size(Session_name,1));
@@ -225,6 +231,7 @@ for i=1:size(Session_name,1)
          end
 end
 
+%Check Reference volume new orientation for each session
 for i=1:size(Session_name,1)
     clear input file2show answ_tmp
     for j=1:6 
@@ -267,8 +274,8 @@ for i=1:size(Session_name,1)
     end
 end
 
+%Copying files from M1_PP_03_Reorient to M1_PP_04_Rename
 disp('Copying files from M1_PP_03_Reorient to M1_PP_04_Rename')
-
 for i=1:size(Session_name,1)
     disp(['Copying files from M1_PP_03_Reorient to M1_PP_04_Rename for session: ',Session_name{i,1}])
     from=[path_to_M1_PP_03_Reorient,'/',Session_name{i,1}];
@@ -277,8 +284,7 @@ for i=1:size(Session_name,1)
 end
 disp('Copying files from M1_PP_03_Reorient to M1_PP_04_Rename Completed')
 
-%% Placing reference Volume of each session at first place 
-
+% Placing reference Volume of each session at first place 
 for i=1:size(Session_name,1)
     f = [path_to_M1_PP_04_Rename,'/',Session_name{i,1}];
     cd(f)
@@ -305,7 +311,6 @@ disp('End of Module 1!')
 spm_input('Orientation of all of the Fetal Functional images completed! Proceed with 1st-pass Masking, Realignment and 1st-pass Scrubbing procedure in module 2.','-1','bd','Ok!');
 
 %% Module 2
-
 disp('---------------------------------------------------------------------------------')
 disp('---------------------------------------------------------------------------------')
 disp('|||\\\\///|||    //°°°\\     |||\\    |||     |||  |||       |||||||      //-\\  ')
@@ -330,9 +335,8 @@ disp('                           ._)_)./                                        
 disp('                           ._)_)./                                               ')
 disp('                                                                                 ')
 
-%% Copying files inside fMRI masking
+% Copying files inside fMRI masking and creating folders for templates realignement (Session_name_template and Session_name_template_anp)
 disp('Copying files from M1_PP_04_Rename to M2_WS_01_Mask.')
-
 for i=1:size(Session_name,1)
     from=[path_to_M1_PP_04_Rename,'/',Session_name{i,1},'/*.nii'];
     to=[path_to_M2_WS_01_Mask,'/',Session_name{i,1}];
@@ -342,7 +346,7 @@ for i=1:size(Session_name,1)
     mkdir([Session_name{i,1},'template_anp'])
 end
 
-%% Creating and centering all template for each session:
+% Creating and centering all template for each session:
 cd(path_general)
 diary Module2_logfile
 
@@ -351,7 +355,7 @@ spm_input(['Creating session-specific template mask in the user image space for 
 cd(path_general)
 Create_Template(path_original_tmp,path_to_M1_PP_04_Rename,path_to_M2_WS_01_Mask,Session_name);
 
-% Translation of template
+% Template Translation
 num_template=17;
 for i=1:size(Session_name,1)
     disp(['Template mask translation for Session: ',Session_name{i,1}])
@@ -373,7 +377,7 @@ for i=1:size(Session_name,1)
         z_diff=(Sess_origin(3,1) - temp_origin(3,1));
 
      %Translating original templates:
-        matlabbatch{1}.spm.util.reorient.srcfiles = {[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/',Session_name{i,1},'_template/scGW_',num2str(j+20),'.nii']};%{}
+        matlabbatch{1}.spm.util.reorient.srcfiles = {[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/',Session_name{i,1},'_template/scGW_',num2str(j+20),'.nii']};
         matlabbatch{1}.spm.util.reorient.transform.transM = [1 0 0 x_diff
                                                              0 1 0 y_diff
                                                              0 0 1 z_diff
@@ -383,7 +387,7 @@ for i=1:size(Session_name,1)
 
       %Translating smoothed templates:
         for jjj=1:3
-        matlabbatch{1}.spm.util.reorient.srcfiles = {[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/',Session_name{i,1},'template_anp/banp_',num2str(jjj),'_',num2str(j+20),'.nii']};%{}
+        matlabbatch{1}.spm.util.reorient.srcfiles = {[path_to_M2_WS_01_Mask,'/',Session_name{i,1},'/',Session_name{i,1},'template_anp/banp_',num2str(jjj),'_',num2str(j+20),'.nii']};
         matlabbatch{1}.spm.util.reorient.transform.transM = [1 0 0 x_diff
                                                              0 1 0 y_diff
                                                              0 0 1 z_diff
@@ -401,7 +405,7 @@ for i=1:size(Session_name,1)
 
 end
 
-%% Insert Gestational Week and choose one Template:
+% User insert Gestational Week and choose one Template:
 template2show = cell(1);
 
 clear input
@@ -413,10 +417,11 @@ k=1;
 ref2show=[path_to_M2_WS_01_Mask,'/',Session_name{1,1},'/',Session_name{1,1},'_001.nii'];
 spm_check_registration(ref2show,template2show{:,:});
 
+% User select one Template:
 spm_input(['The chosen session-specific template mask should include the entire fetal brain and a limited quantity of the surrounding anatomical structures (black edges). Please use the zoom function for a more accurate choice.'],'-1','bd','Yes');
 GW2beused=spm_input('Choose the session-specific template mask:','-1','m','21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37',[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],30);
 
-% First choice
+% First Template choice
 clear input template2show ref2show temp2show
 template2show = cell(1);
     for j=1:3
@@ -426,15 +431,12 @@ ref2show=[path_to_M2_WS_01_Mask,'/',Session_name{1,1},'/',Session_name{1,1},'_00
 temp2show=[path_to_M2_WS_01_Mask,'/',Session_name{1,1},'/',Session_name{1,1},'_template/',Session_name{1,1},'scGW_',num2str(GW2beused),'.nii'];
 spm_check_registration(ref2show,temp2show,template2show{:,:});
 
-% Final choice
-
+% Final Template choice
 spm_input('For the session-specific template mask you have chosen, select the one that covers the whole brain in each direction (es. L/R, A/P; I/S).','-1','bd','Ok!');
 template2bused=spm_input('Insert a number between 1 and 4: ','-1','m','1|2|3|4',[1,2,3,4]);
 
-%% Applying the session-specific template mask ( 1-pass Masking):
-
+% Applying the session-specific template mask (1-pass Masking):
 disp('Masking images with the chosen session-specific template mask (1-pass Masking): ');
-
 clear matlabbatch list_to_mask
 for i=1:size(Session_name,1)
     cd([path_to_M2_WS_01_Mask,'/',Session_name{i,1}]);
@@ -461,6 +463,7 @@ for i=1:size(Session_name,1)
     clear tmp
 end
 
+% 1-pass Masking review:
 for i=1:size(Session_name,1)
 clear input  ref2show file2show temp2beshow
        for j=1:6
@@ -482,7 +485,7 @@ clear input  ref2show file2show temp2beshow
         end
 end
 
-%% From 05_0_fMRI_Masking to 05_fMRI_Realign_to_First_Within_Session
+% Copying files from 0M2_WS_01_Mask to M2_WS_02_Realign
 disp('Copying files from M2_WS_01_Mask to M2_WS_02_Realign.')
 
 for i=1:size(Session_name,1)
@@ -491,9 +494,8 @@ for i=1:size(Session_name,1)
     copyfile(from,to)
 end
 
-%% Realignment WS to first volume with SPM:
+% Realignment Within Session to first volume(all volumes to their reference):
 clear answ_tmp answ
-% Visualization 
 whg2show=cell(GW2beused-21,1);
 k=1;
 clear answ
@@ -514,6 +516,7 @@ answ=num2str(answ_tmp(hh));
     end
 end
 
+% The user select the Tissue-Weighting mask:
 spm_input('Now you should select the Tissue-Weighting mask that will be used to calculate Within Session motion parameters in the Realignment algorithm. Therefore it should completely fit within the brain. ','-1','bd','Ok!');
 wgh_winner=spm_input('Choose the Tissue-Weighting mask: ','-1','m',answw,answ_tmp);
 wgh_winner=num2str(wgh_winner);
@@ -562,7 +565,7 @@ clear matlabbatch list list_tmpp path_tmp list_tmpp lista_volumi path_folder_tmp
         disp(['Realignment of ',Session_name{ii,1},' volumes to reference volume completed!!'])
         end
 
-%Renaming:
+% Renaming (r1 prefix):
 
         for i=1:size(Session_name,1)
             cd([path_to_M2_WS_02_Realign,'/',Session_name{i,1}]);
@@ -576,8 +579,7 @@ clear matlabbatch list list_tmpp path_tmp list_tmpp lista_volumi path_folder_tmp
 spm_input('Within each Session folder found in the M2_WS_02_Realign folder you can find the: 1) output of each realigned volume with -r1- as the prefix; 2) mean volume calculated from the average of all session volumes; 3) a txt file (rp*.txt) and a ps file (*.ps) reporting translation and rotation motion parameters and charts of each volume with respect to the reference image. ','-1','bd','Ok!');
 
 
-%% From M2_WS_02_Realign to M2_WS_03_Scrub
-
+% Copying files from M2_WS_02_Realign to M2_WS_03_Scrub
 disp('Copy from M2_WS_02_Realign to M2_WS_03_Scrub!!')
 
 for i=1:size(Session_name,1)
@@ -590,8 +592,7 @@ end
 
 disp('Copying from M2_WS_02_Realign to M2_WS_03_Scrub Completed!!')
 
-%% ART
-
+% ART
 disp('1st-pass scrubbing procedure with Artifact Detection Tool is running:')
 
 %Configuring text file:
@@ -601,7 +602,7 @@ fid = fopen('File_1Srub.cfg','rt');
 X = fread(fid) ;
 fclose(fid) ;
 X = char(X.') ;
-% replace string S1 with string S2
+
 % (replacing '9999' string with correct session name)
 folder_out=path_to_M2_WS_03_Scrub;
 if i==1
@@ -617,25 +618,22 @@ cd(path_to_cffg_file)
 art('sess_file','File_1Srub.cfg');
 disp(['ART for ', Session_name{i,1},' Completed!!'])
 end
-% Restoring text file. File File_da_usare originale:
-%metti 9999 al posto della sessione
+
+% Restoring text file. 
 cd(path_to_cffg_file)
 fid = fopen('File_1Srub.cfg','rt');
 X = fread(fid);
 fclose(fid);
 X = char(X.');
-% replace string S1 with string S2
 Y = strrep(X,Session_name{end,1}, '9999');
 fid2 = fopen('File_1Srub.cfg','wt');%sovrascrivo il file ogni volta;
 fwrite(fid2,Y);
 fclose (fid2);
 disp('ART for all sessions Completed!!')
 spm_input('Check the Artifact Detection Tool outlier graphs. This inspection could help you in the next section where you will be ask to remove/keep outlier images. ','-1','bd','Ok!');
-%spm_input('Press Continue to proceed:','-1','b','Continue|--',[1,0]);
 close all
 
 %% From M2_WS_03_Scrub to M2_WS_04_Rename
-
 disp('Copying files from M2_WS_03_Scrub to M2_WS_04_Rename and moving ART detected ouliers into a separate subfolder:')
 
 for i=1:size(Session_name,1)
@@ -668,7 +666,7 @@ disp('1-pass scrubbed procedure Completed!')
 close all
 
 
-%% Scrubbed volumes visualization and choice to keep the volumes:
+%% Scrubbed volumes visualization and choice to remove/keep the volumes:
 
 spm_input('SPM display window will show scrubbed volume(s) for each session. Instructions for removing detected outliers: ''Yes'' to scrub all of the volumes, ''No'' to keep all of the volumes or ''OnebyOne'' button to select the volume(s) you want to keep for the current session. ','-1','bd','Ok!');
 clear ref2show
@@ -762,8 +760,7 @@ for i=1:size(Session_name,1)
     end
 end
 
-%Eliminating session if number of volumes is less than 1/3%
-
+%Eliminating session if number of volumes is less than 1/3
 flag=zeros(size(Session_name,1),1);
 spm_input('Sessions with less than 2/3 of the initial number of volumes will be deleted due to excessive Within Session movement.','-1','bd','Ok!');
 
@@ -784,7 +781,6 @@ Session_name=Session_name(logical(flag));
 spm_input(['Remaining session(s) are: ', num2str(length(Session_name)),' out of ',num2str(length(flag)),'.'],'-1','bd','Ok!');
 
 %% Rename files inside M2_WS_04_Rename:
-
 disp('Renaming each session after 1-pass scrubbing procedure:')
 
 cd(path_to_M2_WS_04_Rename)
@@ -817,7 +813,11 @@ cd(path_to_M1_PP_01_OrigVol);
 list=dir();
 % Get vector to recognize folders only:
 list(ismember({list.name},{'.','..'}))=[];
-if length(list)>1
+
+%     if the number of session is >1 the proccessing will continue with standard procedure
+%     if only one session is present then the code will jump to M5 skipping M3 and M4.
+
+if length(list)>1 
    
 spm_input('You have more than one session therefore you will proceed with the standard procedure.','-1','bd','Ok!');
    
@@ -846,7 +846,7 @@ disp('                           ._)_)./                                        
 disp('                           ._)_)./                                               ')
 disp('                                                                                 ')
 
-%% Creation of Mask_ref_Vol folder and creation od session folders inside 07_2_Segment_Ref_Volumes:
+% Creation of session folders inside M3_WS_01_SegRefVols for reference volume segmentations:
 
 cd(path_to_M3_WS_01_SegRefVols);
 for i=1:size(Session_name,1)
@@ -934,7 +934,7 @@ for i=1:size(Session_name,1)
             end
 end
 
-    % Segmentation and Gestational Week selection
+% Segmentation and Gestational Week selection
 
 spm_input(['In this section Session-Specific Functional References Segmentation of each reference image is processed. It is suggested to use the GW that was used in module 2: ',num2str(GW2beused)],'-1','bd','Ok!');
 Decision_GW = spm_input(['Do you want to proceed with ',num2str(GW2beused),' GW for classes C1:C7 and inner and outer brain?'],'-1','bd','yes|no',[1,0]);
@@ -1049,11 +1049,10 @@ disp(['Creation of inner-brain Session-Specific Functional References masks for 
 spm_jobman('run',matlabbatch);
 end
 
-%% Visual sc9 inspection
+%% Visual sc9 (segmentation) inspection for all session
 
 spm_input(['Now the inner-brain Session-Specific Functional Reference mask will be displayed for each session. Segmentation was processed with : ',num2str(GW_winner) ,' Gestational Week.'],'-1','bd','Ok!');
 
-% Comment this section to skip the visualization;
 clear ref2show mask2show
 for i=1:size(Session_name,1)
 disp(['Display session: ',Session_name{i,1}, ' and relative session-specific inner-brain mask.'])
@@ -1078,13 +1077,13 @@ for i=1:size(Session_name,1)
 end
 
 
-%% Copying files
+%% Copying files from M2_WS_04_Rename to M3_WS_02_MaskRefVols
 
 cd(path_to_M3_WS_02_MaskRefVols)
 for i=1:size(Session_name,1)
 mkdir(Session_name{i,1})
 end
-% Copio file rinominati scrubbati
+% Copying survived volumes (not scrubbed)
 for i=1:size(Session_name,1)
     from=[path_to_M2_WS_04_Rename,'/',Session_name{i,1}];
     to=[path_to_M3_WS_02_MaskRefVols,'/',Session_name{i,1}];
@@ -1131,7 +1130,7 @@ for i=1:size(Session_name,1)
 end
 
 %% Realign masked ref.
-% Insertion of reference volume inside M3_WS_03_RealignMaskRefVols :
+% Insertion of reference volumes inside M3_WS_03_RealignMaskRefVols:
 for i=1:size(Session_name,1)
     from=[path_to_M3_WS_02_MaskRefVols,'/',Session_name{i,1},'/','mr1m',Session_name{i,1},'_001.nii'];
     to=path_to_M3_WS_03_RealignMaskRefVols;
@@ -1172,7 +1171,7 @@ end
 mean2show{1,1}=[path_to_M3_WS_03_RealignMaskRefVols,'/Mean_fMRI_Ref_Vol.nii'];%mask
 spm_check_registration(ref2show{:,:},mean2show{:,:});
 
-%% 08_fMRI_Rename: 
+%% Copying and renaming files form M3_WS_03_RealignMaskRefVols to M3_WS_04_Rename: 
 
 for i=1:size(Session_name,1)
     %disp(['Copying masked volumes of session ', Session_name{i,1}, ' from M3_WS_02_MaskRefVols to M3_WS_04_Rename folder.' ]);
@@ -1210,7 +1209,6 @@ disp('Renaming Completed!!');
 
 spm_input('Mean inner-brain Masked Funcrtional Reference volume was calculated and named Mean_fMRI_Ref_Vol.nii and it was placed as the first volume of the first session as required for the Between Session processing. Press ok to proceed with Realignment of inner-brain masked Functional images in module 4: ','-1','bd','Ok!');
 
-% GWin_out_winner GW_winner
 cd(path_general)
 save('Variables_M3.mat','GW_winner','GWin_out_winner','Session_name','vol4session','GW2beused')
 disp('Copying DONE!')
@@ -1243,7 +1241,7 @@ disp('                             ._)_)./                                      
 disp('                                                                                 ')
 
 
-%% Copying file from previous module
+% Copying file from previous module
 
 disp('Copying file from M3_WS_04_Rename to M4_BS_01_Realign_Reslice:')
 for i=1:size(Session_name,1)
@@ -1320,7 +1318,7 @@ else
 
 end
 
-% Visualization of Realign of
+% Visual inspection of random BS Realigned inner-brain masked Functional images
 disp('Visual inspection of random BS Realigned inner-brain masked Functional images.')
 clear ref2show mean2show img2show
 mean2show{1,1}=[path_to_M4_BS_01_Realign_Reslice,'/',Session_name{1,1},'/mr1m',Session_name{1,1},'_0001.nii,1'];
@@ -1340,7 +1338,7 @@ end
 spm_check_registration(mean2show{1,1},img2show{:,:});
 
 
-%% SCRUB
+% SCRUB
 
 spm_input('Realignment of all inner-brain Session-Specific Masked Functional Scans completed. Press ok to proceed with the 2nd scrubbing procedure with ART, DVARS and FD. ','-1','bd','Ok!');
 
@@ -1428,9 +1426,7 @@ art('sess_file','File_2Scrub.cfg');
 %clear variable:
 clear Y counter Motiontobeinserted Utils util list Imagestobeinserted X art
 
-%close all
-
-%Caricare in cartella 'motion_outliers' i volumi 4D di ogni sessione (copio da 00_Original..).
+%Creating 4D files for DVARS and FD inside the motion_outliers folder
 cd(path_to_M4_BS_02_Scrub)
 mkdir('motion_outliers');
 
@@ -1456,7 +1452,7 @@ disp('Creation of 4D files for DVARS and FD Completed!')
 
 %% Dvars FD for each session:
 
-%Creo una cartella per ogni sessione e dentro metto le cartelle DVARS e FD:
+%Creating DVARS e FD folder inside every session folder in M4_BS_02_Scrub:
 for i=1:size(Session_name,1)
     cd([path_to_M4_BS_02_Scrub,'/motion_outliers'])
     mkdir(Session_name{i,1})
@@ -1465,8 +1461,7 @@ for i=1:size(Session_name,1)
     mkdir('FD')
 end
 
-%% DVARS && FD
-
+% DVARS && FD
 lliist_rp=dir([path_to_M4_BS_02_Scrub,'/Motion_file/*.txt']);
 
 for i=1:size(Session_name,1)
@@ -1522,7 +1517,7 @@ Dvars_outliers=(Dvars_value>threshv);
 dlmwrite([path_to_M4_BS_02_Scrub,'/motion_outliers/',Session_name{i,1},'/DVARS/output_vals.txt'],Dvars_value')
 dlmwrite([path_to_M4_BS_02_Scrub,'/motion_outliers/',Session_name{i,1},'/DVARS/output.txt'],Dvars_outliers')
 
-%% Frame-Wise Displacement
+% Frame-Wise Displacement
 
 MP=load([path_to_M4_BS_02_Scrub,'/Motion_file/',lliist_rp(i).name]);
 drflag = [0 0 0 1 1 1]; % 0 trans 1 rotation
@@ -1530,12 +1525,12 @@ r_Idx   = find(drflag);
 t_idx   = find(~drflag);
 R_MP=MP(:,r_Idx);
 T_MP=MP(:,t_idx);
-%Differenziale e aggiungo l'ultima riga che rimane uguale(tolgo 0)
+% Differential calculation and removing last row
 Tdiff=diff(T_MP,1,1);
-Tdiff=[Tdiff;-T_MP(end,:)]; %ok
-%Differenziale e aggiungo l'ultima riga che rimane uguale(tolgo 0)
+Tdiff=[Tdiff;-T_MP(end,:)];
+% Differential calculation and removing last row
 Rdiff=diff(R_MP,1,1);
-Rdiff=[Rdiff;-R_MP(end,:)]; %ok
+Rdiff=[Rdiff;-R_MP(end,:)];
 %process rotazioni
 Rdiff=abs(Rdiff)*50;
 Rdiff_fin=mean(Rdiff,2)*3;
@@ -1560,38 +1555,32 @@ dlmwrite([path_to_M4_BS_02_Scrub,'/motion_outliers/',Session_name{i,1},'/FD/outp
 disp(['DVARS and FD for session : ',Session_name{i,1}, ' COMPLETED!']);
 end
 
+% Concatenating Outliers of DVARS, FD and ART!
 disp('Concatenating Outliers of DVARS, FD and ART!');
-
-% acquisire elenco delle sottocartelle in motion_outliers
 cd(path_to_M4_BS_02_Scrub)
 d = dir('motion_outliers');
 isub = [d(:).isdir]; %# returns logical vector
 nameFolds = {d(isub).name}';
 nameFolds(ismember(nameFolds,{'.','..'})) = [];
 
-% Creo vettore in cui memorizzo il numero di volumi in ogni sottocartella
+% Creating vector with number of volumes in each subfolder and filling it with info found in "motion_outliers/*/FD/output_vals.txt"
 numFilesInFolders = zeros(size(nameFolds, 1), 1);
-% e lo riempio basandomi sulle info contenute nei file "motion_outliers/*/FD/output_vals.txt"
 for i = 1:length(nameFolds)
   currentFile = fullfile('motion_outliers', nameFolds(i), 'FD', 'output_vals.txt');
   A = importdata(char(currentFile));
   numFilesInFolders(i) = size(A, 1);
 end
 
-% creare vettore colonna di output. Lungo 60 * numero_sessioni, pieno di zeri.
 outputVect = [];
 
 for i = 1:length(nameFolds)
    tempZeros = zeros(numFilesInFolders(i), 1);
    dummyZeros = zeros(numFilesInFolders(i), 1);
-   % aprire DVARS, cercare file output.txt
+   % Open Dvars folder and search for output.txt
    %currentFile = strcat('motion_outliers/', nameFolds(i), '/DVARS/output.txt');
    currentFile = fullfile('motion_outliers', nameFolds(i), 'DVARS', 'output.txt');
    tempCol = [];
    if exist(char(currentFile), 'file') == 2
-       %  disp(currentFile)
-       %  se non esiste, pace
-       %  se esiste, leggere il contenuto con importdata('output.txt')
        A = importdata(char(currentFile));
        A = [A dummyZeros];
        A = A';
@@ -1602,17 +1591,15 @@ for i = 1:length(nameFolds)
        
    end
 
-   % ripetere con FD/output.txt
+   % Open FD folder and search for output.txt
    %currentFile = strcat('motion_outliers/', nameFolds(i), '/FD/output.txt');
    currentFile = fullfile('motion_outliers', nameFolds(i), 'FD', 'output.txt');
    if exist(char(currentFile), 'file') == 2
        disp(currentFile)
-       % se non esiste, pace
-       % se esiste, leggere il contenuto con importdata('output.txt')
        A = importdata(char(currentFile));
        A = [A dummyZeros];
        A = A';
-       %  merge degli 1 su ununico vettore colonna
+       %  Merge output of Dvars and FD
        tempCol = sum(A);
        tempCol = tempCol';
        tempZeros = tempZeros + tempCol;
@@ -1661,7 +1648,7 @@ end
 
 disp('Placing outlier volumes in the relative session ''scrubbed_volumes'' folder.');
 
-%muovo gli outliers
+% Moving outliers volume in scrubbed_volumes within each session folder
 cd(path_to_M4_BS_02_Scrub)
 load('indici_outliers.mat') % outliersIdx
 for i=1:length(outliersIdx)
@@ -1687,7 +1674,7 @@ for i=1:length(outliersIdx)
     end
 end
 
-%% Scrubbed volumes visualization and choice to keep the volumes:
+%% Scrubbed volumes visualization and choice to remove/keep the volumes:
 
 spm_input('SPM display window will show scrubbed volume(s) for each session. Instructions for removing detected outliers: ''Yes'' to scrub all of the volumes, ''No'' to keep all of the volumes or ''OnebyOne'' button to select volumes you want to keep for the current session. ','-1','bd','Ok!');
 
@@ -1772,7 +1759,6 @@ for i=1:size(Session_name,1)
                     end
         else
             for jj=1:size(list,1)
-            %prmt=['Do you want to keep ',list(jj).name ,' volume? (Press 1 to keep, 0 to scrub): '];
             spm_check_registration(ref2show{1,1},img2show{jj,:});
              takebackscrub(jj)=spm_input(['Keep ',list(jj).name ,'?'],'-1','y/n',[1,0]);
                 if takebackscrub(jj)
@@ -1783,7 +1769,7 @@ for i=1:size(Session_name,1)
     end
 end
 
-%Eliminating session if number of volumes is less than 33%
+%Eliminating session if number of volumes is less than 1/3
 clear flag check_volumes
 flag=zeros(size(Session_name,1),1);
 disp('Sessions with less than 2/3 of the initial number of volumes will be deleted due to excessive movement Between Session.')
@@ -1802,7 +1788,7 @@ Session_name=Session_name(logical(flag));
 spm_input(['Remaining session(s) are: ', num2str(length(Session_name)),' out of ',num2str(length(flag)),'.'],'-1','bd','Ok!');
    
 
-%% Copy and renaming file from M4_BS_02_Scrub to M4_BS_03_Rename
+% Copy and renaming file from M4_BS_02_Scrub to M4_BS_03_Rename
 cd(path_to_M4_BS_03_Rename)
 
 for i=1:size(Session_name,1)
@@ -1862,8 +1848,9 @@ disp('                           ._)_)./                                        
 disp('                           ._)_)./                                               ')
 disp('                                                                                 ')
 
-%% DECISION ABOUT GROUP ANALYSIS:
-% In case of One session the processing start again here afer module 2.
+% DECISION ABOUT GROUP ANALYSIS:
+
+% In case of one session the processing start again here afer module 2.
 
 else
 spm_input('You have only one session therefore M3 and M4 modules will be skipped and their folders will be deleted.','-1','bd','Ok!');    
@@ -1892,7 +1879,7 @@ if GA==1
             movefile([path_general,folder2beremoved{1,i}],[path_general,folder2becreated{1,i}])
     end
         
-    % Changing path
+    % Changing path for Group Analysis
 
             %Module5
             path_to_M5_BS_01_SegMeanRefVol=[path_general,'M5_GR_BS_01_SegMeanRefVol'];
@@ -1928,7 +1915,7 @@ spm_input('You chose the single subject analysis!','-1','bd','Ok!');
 
 end
 
-%% Segment Mean Ref and ask for GW e GW inner outer:
+%% Segment the Mean BS Functional Reference and ask for GW e GW inner outer:
 
 spm_input('Next you will be asked for the Gestational Week in order to proceed with the Segmentation of the Mean BS Functional Reference volume for the inner-brain BS mask and Deformation parameters calculation. ','-1','bd','Ok!');
 
@@ -2056,7 +2043,7 @@ spm_check_registration(list.name,[path_to_M5_BS_01_SegMeanRefVol,'/r2mr1m',Sessi
 disp('Check the inner-brain mask for the Mean Functional Reference Image.')
 spm_input('Mean Funct. Ref. Mask review:','-1','b','Continue|--',[1,0]);
 
-%% Applico la masschera sc9 alla Mean:
+%% Applying sc9 mask to the Mean BS Functional Reference:
 
 % Copying sc9 mask file:
 from=[path_to_M5_BS_02_MaskMeanRefVol,'/sc9*'];
@@ -2097,7 +2084,7 @@ matlabbatch{1}.spm.util.imcalc.outdir=output;
 matlabbatch{1, 2}.spm.spatial.normalise.write.subj.def{1, 1}=output2;
 spm_jobman('run',matlabbatch);
 
-%Checkreg Wstrip Template pulito della GW_winner scelta
+%Checkreg Wstrip and choosen GW Template
 clear Wstrip2show temp2show
 disp('Check the Normalized Mean Functional Reference Image with subject GW template space.')
 Wstrip2show=[path_to_M5_BS_02_MaskMeanRefVol,'/wstrip_mean_ref_funct.nii'];
@@ -2250,7 +2237,7 @@ end
 spm_check_registration(ref2show{1,1},img2show{:,:});
 spm_input('Check masked volumes:','-1','b','Continue|--',[1,0]);
 
-%Applying batch:
+%Applying normalization:
 clear matlabbatch input output
 matlabbatch{1}.spm.spatial.normalise.write.woptions.bb = [NaN NaN NaN
                                                           NaN NaN NaN];
@@ -2395,7 +2382,6 @@ spm_ov_browser('ui',char(FileNames_tot))
 spm_input('Check final 4D movie:','-1','b','Continue|--',[1,0]);
 
 % 4D timeseries creation
-%SMP 3D to 4D
 
     disp('Creating 4D files!')
     clear matlabbatch
