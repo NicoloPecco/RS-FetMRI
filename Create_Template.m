@@ -2,10 +2,11 @@ function [] = Create_Template(path_original_tmp,path_to_M1_PP_04_Rename,path_to_
 
 % This function allows to create fMRI template for each Gestational Week in the User specific space (image dimension and voxel resolution).
 % INPUT:
-    %1) path_original_tmp: path of original template; Example ('/home/dati/Nico_auto_15T/Dati_fmri/Template_4_bet/Original_bin_Template' )
-    %2) Session_name.
-% Reference image is taken from folder 04_fMRI_Rename. It will be the
-% first volume of the first session.
+    %1) path_original_tmp: path to the RS-FetMRI folder; Example ('/home/dati/Nico_auto_15T/Dati_fmri/RS-FetMRI' )
+    %2) path_to_M1_PP_04_Rename: path to the M1_PP_04_Rename folder; Example ('/home/dati/Nico_auto_15T/Dati_fmri/RS-FetMRI/M1_PP_04_Rename' )
+    %3) path_to_M2_WS_01_Mask: path of original template; Example ('/home/dati/Nico_auto_15T/Dati_fmri/Template_4_bet/Original_bin_Template' )
+    %4) Session_name.
+% Reference image is taken from folder M1_PP_04_Rename. It will be the first volume of the first session.
 
 cd(path_original_tmp);
 for i=1:size(Session_name,1)
@@ -66,8 +67,8 @@ for hh=1:size(Session_name,1)
     delete('*tcGW')
 end
 
-%% 2 part
-    %smooth anisotropico
+%% 2 part: Smothing with 3 different kernels:
+
     ker=[4 4 4;6 6 6;8 8 8];
 for hh=1:size(Session_name,1)
      clear input output option cmd matlabbatch
@@ -116,18 +117,3 @@ for hh=1:size(Session_name,1)
 rmdir(Session_name{hh,1})
 end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
