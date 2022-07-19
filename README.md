@@ -47,4 +47,4 @@ SPM movie display of the final Dataset. This movie is related to the TestSet. Se
 
 # Citation
 
-Still to be inserted.
+Pecco N, Canini M, Mosser KHH, Caglioni M, Scifo P, Castellano A, Cavoretto P, Candiani M, Baldoli C, Falini A, Rosa PAD. RS-FetMRI: a MATLAB-SPM Based Tool for Pre-processing Fetal Resting-State fMRI Data. Neuroinformatics. 2022 Jul 14. doi: 10.1007/s12021-022-09592-5. Epub ahead of print. PMID: 35834105.
